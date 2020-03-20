@@ -1,0 +1,264 @@
+{
+	"info": {
+		"_postman_id": "ee47d5c0-7450-442d-a008-c85324e1ec61",
+		"name": "Fridge",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Fridge",
+			"item": [
+				{
+					"name": "Create Fridge",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\" : \"Fridge 1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{svc}}/fridge",
+							"host": [
+								"{{svc}}"
+							],
+							"path": [
+								"fridge"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Fridge",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\" : \"Fridge 1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{svc}}/fridge/5e72b8c9b74eca639c340804",
+							"host": [
+								"{{svc}}"
+							],
+							"path": [
+								"fridge",
+								"5e72b8c9b74eca639c340804"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Fridges",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\" : \"Fridge 1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{svc}}/fridge",
+							"host": [
+								"{{svc}}"
+							],
+							"path": [
+								"fridge"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Insert Into Fridge",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\" : \"Fridge 1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{svc}}/fridge/5e72dfb3a97d2b2b1052dd1d/item/5e72dfb8a97d2b2b1052dd1f/qty/1",
+							"host": [
+								"{{svc}}"
+							],
+							"path": [
+								"fridge",
+								"5e72dfb3a97d2b2b1052dd1d",
+								"item",
+								"5e72dfb8a97d2b2b1052dd1f",
+								"qty",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Item",
+			"item": [
+				{
+					"name": "Create Cheese Item",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\" : \"Moon Cheese\",\n\t\"itemType\": \"CHEESE\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{svc}}/item",
+							"host": [
+								"{{svc}}"
+							],
+							"path": [
+								"item"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Pepsi Item",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\" : \"Pepsi\",\n\t\"itemType\": \"SODA\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{svc}}/item",
+							"host": [
+								"{{svc}}"
+							],
+							"path": [
+								"item"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Coke Item",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\" : \"Coke\",\n\t\"itemType\": \"SODA\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{svc}}/item",
+							"host": [
+								"{{svc}}"
+							],
+							"path": [
+								"item"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Items",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{svc}}/item",
+							"host": [
+								"{{svc}}"
+							],
+							"path": [
+								"item"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Item  by ItemType",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\" : \"cheese\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{svc}}/item/itemType/SODA",
+							"host": [
+								"{{svc}}"
+							],
+							"path": [
+								"item",
+								"itemType",
+								"SODA"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
