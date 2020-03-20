@@ -63,33 +63,59 @@ public class FridgeHandler {
         String itemId = req.pathVariable("itemId");
         int quantity = Integer.parseInt(req.pathVariable("qty"));
 
-        Mono<FridgeAndItemToAdd> fridgeAndItemToAddMono = fridgeRepository.findById(fridgeId).zipWith(itemRepository.findById(itemId), (f1, i1) -> new FridgeAndItemToAdd(f1, i1, quantity));
+        Mono<FridgeAndItem> fridgeAndItemMono = fridgeRepository.findById(fridgeId).zipWith(itemRepository.findById(itemId), (f1, i1) -> new FridgeAndItem(f1, i1, quantity));
 
-        return validate( c -> {
+        return validateInsert(c -> {
             c.fridge.addItem(c.item, c.qty);
             Mono<Fridge> savedMono = fridgeRepository.save(c.fridge);
             return savedMono.flatMap(saved -> ok().contentType(APPLICATION_JSON).bodyValue(saved));
-        }, fridgeAndItemToAddMono);
+        }, fridgeAndItemMono);
 
     }
 
+    public Mono<ServerResponse> removeItem(ServerRequest req) {
+        String fridgeId = req.pathVariable("id");
+        String itemId = req.pathVariable("itemId");
+        int quantity = Integer.parseInt(req.pathVariable("qty"));
+
+        Mono<FridgeAndItem> fridgeAndItemMono = fridgeRepository.findById(fridgeId).zipWith(itemRepository.findById(itemId), (f1, i1) -> new FridgeAndItem(f1, i1, quantity));
+
+        return validateRemove(c -> {
+            c.fridge.removeItem(c.item, c.qty);
+            Mono<Fridge> savedMono = fridgeRepository.save(c.fridge);
+            return savedMono.flatMap(saved -> ok().contentType(APPLICATION_JSON).bodyValue(saved));
+        }, fridgeAndItemMono);
+
+    }
 
     // Validate no more than 12 cans of soda here.
-    public  Mono<ServerResponse> validate(Function<FridgeAndItemToAdd, Mono<ServerResponse>> block,
-                                                Mono<FridgeAndItemToAdd> fridgeAndItemToAddMono) {
+    public Mono<ServerResponse> validateInsert(Function<FridgeAndItem, Mono<ServerResponse>> block,
+                                                Mono<FridgeAndItem> fridgeAndItemMono) {
 
-       return fridgeAndItemToAddMono
+       return fridgeAndItemMono
                .flatMap(combo -> combo.item.getItemType() == ItemType.SODA && combo.fridge.getItemTypeCount(ItemType.SODA) + combo.qty > MAX_CANS
-                       ? ServerResponse.unprocessableEntity().bodyValue("Cannot exceed 12 cans of soda")
-                       : block.apply(combo));
+                       ? ServerResponse.badRequest().bodyValue("Cannot exceed 12 cans of soda")
+                       : block.apply(combo))
+               .switchIfEmpty(ServerResponse.notFound().build());
 
     }
 
+
+    // Validate can only remove found items.
+    public Mono<ServerResponse> validateRemove(Function<FridgeAndItem, Mono<ServerResponse>> block,
+                                               Mono<FridgeAndItem> fridgeAndItemMono) {
+        return fridgeAndItemMono
+                .flatMap(combo-> combo.fridge.getItemCount(combo.item.getId()) - combo.qty < 0
+                ? ServerResponse.badRequest().bodyValue("Cannot remove that many of item")
+                : block.apply(combo))
+                .switchIfEmpty(ServerResponse.notFound().build());
+
+    }
 
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class FridgeAndItemToAdd {
+    public static class FridgeAndItem {
         Fridge fridge;
         Item item;
         int qty;

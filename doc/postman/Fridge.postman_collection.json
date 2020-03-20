@@ -108,15 +108,37 @@
 							}
 						},
 						"url": {
-							"raw": "{{svc}}/fridge/5e72dfb3a97d2b2b1052dd1d/item/5e72dfb8a97d2b2b1052dd1f/qty/1",
+							"raw": "{{svc}}/fridge/5e74322e8e54057e7378e0a5/item/5e7432358e54057e7378e0a6/qty/1",
 							"host": [
 								"{{svc}}"
 							],
 							"path": [
 								"fridge",
-								"5e72dfb3a97d2b2b1052dd1d",
+								"5e74322e8e54057e7378e0a5",
 								"item",
-								"5e72dfb8a97d2b2b1052dd1f",
+								"5e7432358e54057e7378e0a6",
+								"qty",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete from Fridge",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{svc}}/fridge/5e7432d48182460d03770523/item/5e7432d78182460d03770524/qty/1",
+							"host": [
+								"{{svc}}"
+							],
+							"path": [
+								"fridge",
+								"5e7432d48182460d03770523",
+								"item",
+								"5e7432d78182460d03770524",
 								"qty",
 								"1"
 							]

@@ -21,7 +21,8 @@ public class FridgeRouterConfig {
                                 .POST("", fridgeHandler::createFridge))
                         .GET("/{id}", fridgeHandler::findFridge)
                         .GET("", fridgeHandler::findFridges)
-                        .PUT("/{id}/item/{itemId}/qty/{qty}", fridgeHandler::addItem))
+                        .PUT("/{id}/item/{itemId}/qty/{qty}", fridgeHandler::addItem)
+                        .DELETE("/{id}/item/{itemId}/qty/{qty}", fridgeHandler::removeItem))
                 .build();
     }
 

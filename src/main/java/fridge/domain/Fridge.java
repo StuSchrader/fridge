@@ -33,13 +33,13 @@ public class Fridge {
         }
     }
 
-    public void removeItem(String name, int count) {
+    public void removeItem(Item item, int count) {
         itemsExist();
 
         Iterator<Item> iterator = items.iterator();
         int removed = 0;
         while (iterator.hasNext()) {
-            if (iterator.next().getName().equals(name)) {
+            if (iterator.next().getId().equals(item.getId())) {
                 iterator.remove();
                 ++ removed;
             }
@@ -49,6 +49,10 @@ public class Fridge {
         }
     }
 
+    public int getItemCount(String itemId) {
+        itemsExist();
+        return (int)items.stream().filter(item-> item.getId().equals(itemId)).count();
+    }
 
     public int getItemTypeCount(ItemType itemType) {
         itemsExist();

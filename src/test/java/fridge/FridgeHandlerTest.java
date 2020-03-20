@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -158,6 +157,41 @@ public class FridgeHandlerTest {
                     assertEquals(2, savedItems.stream().filter(item -> item.getId().equals(PEPSI_ID)).count() );
                 });
     }
+    @Test
+    public void removeItem() {
+
+        Item pepsi = new Item(PEPSI_ID, "pepsi", ItemType.SODA);
+
+        List<Item> items = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            items.add(pepsi);
+        }
+
+        Fridge foundFridge = new Fridge(FRIDGE_ID, "name", items);
+
+        Mono<Fridge> fridgeMono = Mono.just(foundFridge);
+        when(fridgeRepository.findById(FRIDGE_ID)).thenReturn(fridgeMono);
+
+        Mono<Item> pepsiMono  = Mono.just(pepsi);
+        when(itemRepository.findById(PEPSI_ID)).thenReturn(pepsiMono);
+
+        Mono<Fridge> resultMono = Mono.just(foundFridge);
+        when(fridgeRepository.save(any(Fridge.class))).thenReturn(resultMono);
+
+        webTestClient
+                .delete()
+                .uri("/fridge/"+FRIDGE_ID+"/item/"+ PEPSI_ID +"/qty/1")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(Fridge.class)
+                .value(value -> {
+                    assertNotNull(value);
+                    List<Item> savedItems = value.getItems();
+                    assertNotNull(savedItems);
+                    assertEquals(1, savedItems.size());
+                    assertEquals(1, savedItems.stream().filter(item -> item.getId().equals(PEPSI_ID)).count() );
+                });
+    }
 
     @Test
     public void sodaValidation() {
@@ -183,7 +217,9 @@ public class FridgeHandlerTest {
                 .put()
                 .uri("/fridge/"+FRIDGE_ID+"/item/"+ COKE_ID +"/qty/1")
                 .exchange()
-                .expectStatus().isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
+                .expectStatus().isBadRequest();
     }
+
+
 
 }
