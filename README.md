@@ -43,7 +43,7 @@ Security is configured currently such that authorization is required for any ope
                 .oauth2ResourceServer()
                 .jwt();
         return http.build();
-
+```
 
 Included is a basic set of calls for postman in: `doc\postman\` 
 
