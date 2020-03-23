@@ -10,14 +10,16 @@ import fridge.repository.ItemRepository;
 import fridge.view.CreateFridge;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 import reactor.core.publisher.Flux;
@@ -31,10 +33,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.*;
+import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.springSecurity;
 
-@WebFluxTest
-@ContextConfiguration(classes = {FridgeHandler.class, FridgeRouterConfig.class})
+@ExtendWith(SpringExtension.class)
+@ActiveProfiles("local")
+@SpringBootTest(classes=FridgeApplication.class)
+@WithMockUser
 public class FridgeHandlerTest {
     public static final String COKE_ID = "cokeid";
     public static final String FRIDGE_ID = "fridgeid";
@@ -43,21 +47,26 @@ public class FridgeHandlerTest {
     @Autowired
     private ApplicationContext applicationContext;
 
+    @Autowired
+    FridgeRouterConfig fridgeRouterConfig;
+
+    @Autowired
+    FridgeHandler fridgeHandler;
+
+    private WebTestClient webTestClient;
+
     @MockBean
     private FridgeRepository fridgeRepository;
 
     @MockBean
     private  ItemRepository itemRepository;
 
-    private WebTestClient webTestClient;
 
     @BeforeEach
     void setUp() {
         webTestClient = WebTestClient
                 .bindToApplicationContext(applicationContext)
                 .apply(springSecurity())
-                .apply(mockJwt())
-                .apply(csrf())
                 .configureClient()
                 .build();
     }
@@ -91,7 +100,6 @@ public class FridgeHandlerTest {
     }
 
     @Test
-    @WithMockUser
     public void getById() {
         Fridge foundFridge = new Fridge(FRIDGE_ID, "name", new ArrayList<>());
         Mono<Fridge> resultMono = Mono.just(foundFridge);
@@ -111,7 +119,6 @@ public class FridgeHandlerTest {
     }
 
     @Test
-    @WithMockUser
     public void getAll() {
         Fridge foundFridge1 = new Fridge(FRIDGE_ID, "name1", new ArrayList<>());
         Fridge foundFridge2 = new Fridge(FRIDGE_ID, "name2", new ArrayList<>());
@@ -167,6 +174,7 @@ public class FridgeHandlerTest {
                     assertEquals(2, savedItems.stream().filter(item -> item.getId().equals(PEPSI_ID)).count() );
                 });
     }
+
     @Test
     public void removeItem() {
 
@@ -204,6 +212,7 @@ public class FridgeHandlerTest {
     }
 
     @Test
+    @WithMockUser
     public void sodaValidation() {
 
         Item pepsi = new Item(PEPSI_ID, "pepsi", ItemType.SODA);
@@ -229,7 +238,4 @@ public class FridgeHandlerTest {
                 .exchange()
                 .expectStatus().isBadRequest();
     }
-
-
-
 }

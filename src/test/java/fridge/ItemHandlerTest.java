@@ -1,19 +1,17 @@
 package fridge;
 
-import fridge.config.ItemRouterConfig;
 import fridge.domain.Item;
-import fridge.handler.ItemHandler;
 import fridge.repository.ItemRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 import reactor.core.publisher.Flux;
@@ -26,8 +24,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.springSecurity;
 
-@WebFluxTest
-@ContextConfiguration(classes = {ItemHandler.class, ItemRouterConfig.class})
+@ActiveProfiles("local")
+@SpringBootTest(classes=FridgeApplication.class)
+@WithMockUser
 public class ItemHandlerTest {
 
     public static final String ITEM_ID = "itemId";
@@ -84,7 +83,6 @@ public class ItemHandlerTest {
 
 
     @Test
-    @WithMockUser
     public void getById() {
         Item foundItem = new Item(ITEM_ID, ITEM_NAME, SODA);
         Mono<Item> resultMono = Mono.just(foundItem);
@@ -104,7 +102,6 @@ public class ItemHandlerTest {
     }
 
     @Test
-    @WithMockUser
     public void getAll() {
         Item foundItem1 = new Item(ITEM_ID, ITEM_NAME, SODA);
         Item foundItem2 = new Item(ITEM_ID_2, ITEM_NAME_2, SODA);
@@ -124,7 +121,6 @@ public class ItemHandlerTest {
 
 
     @Test
-    @WithMockUser
     public void getItemsByType() {
         Item foundItem1 = new Item(ITEM_ID, ITEM_NAME, SODA);
         Item foundItem2 = new Item(ITEM_ID_2, ITEM_NAME_2, SODA);
