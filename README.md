@@ -1,7 +1,7 @@
 ## Spring WebFlux Functional RESTful Fridge Example
 
 This app is a simple working example of a RESTful reactive spring boot application.
-Authentication/Authorization is supported via OKTA OAut 2. 
+Authentication/Authorization is supported via OKTA OAuth 2. 
 
 It is based on two entities: Fridge & Item
 
@@ -30,10 +30,25 @@ The `\fridge` CRUD API, plus the insert/remove item are defined in [FridgeItemRo
                 .build();
 ```
 
+Security is configured currently such that authorization is required for any operation in SecurityConfig.java.  If you want to play with roles/authorities based on patterns, you can insert matchers here.  For example, the three commented out lines below would cause all PUT/POST/DELETE methods to require Admin authority.
+
+```java        
+        http.csrf().disable()
+                .authorizeExchange()
+//                .pathMatchers(HttpMethod.POST, "**").hasAnyAuthority("Admin")
+//                .pathMatchers(HttpMethod.PUT, "**").hasAnyAuthority("Admin")
+//                .pathMatchers(HttpMethod.DELETE, "**").hasAnyAuthority("Admin")
+                .anyExchange().authenticated()
+                .and()
+                .oauth2ResourceServer()
+                .jwt();
+        return http.build();
+
+
 Included is a basic set of calls for postman in: `doc\postman\` 
 
 ### Tech Used
 * Spring Boot WebFlux Functional
 * Embedded Mongo
 * Java 11
-* Oath2 security
+* Oauth2 security
