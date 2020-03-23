@@ -17,7 +17,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -43,9 +42,6 @@ public class FridgeHandlerTest {
 
     @Autowired
     private ApplicationContext applicationContext;
-
-    @Autowired
-    private FilterChainProxy springSecurityFilterChain;
 
     @MockBean
     private FridgeRepository fridgeRepository;
