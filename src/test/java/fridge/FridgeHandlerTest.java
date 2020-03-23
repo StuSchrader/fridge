@@ -16,6 +16,8 @@ import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -30,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.*;
 
 @WebFluxTest
 @ContextConfiguration(classes = {FridgeHandler.class, FridgeRouterConfig.class})
@@ -41,6 +44,9 @@ public class FridgeHandlerTest {
     @Autowired
     private ApplicationContext applicationContext;
 
+    @Autowired
+    private FilterChainProxy springSecurityFilterChain;
+
     @MockBean
     private FridgeRepository fridgeRepository;
 
@@ -51,7 +57,13 @@ public class FridgeHandlerTest {
 
     @BeforeEach
     void setUp() {
-        webTestClient = WebTestClient.bindToApplicationContext(applicationContext).build();
+        webTestClient = WebTestClient
+                .bindToApplicationContext(applicationContext)
+                .apply(springSecurity())
+                .apply(mockJwt())
+                .apply(csrf())
+                .configureClient()
+                .build();
     }
 
     @Test
@@ -83,6 +95,7 @@ public class FridgeHandlerTest {
     }
 
     @Test
+    @WithMockUser
     public void getById() {
         Fridge foundFridge = new Fridge(FRIDGE_ID, "name", new ArrayList<>());
         Mono<Fridge> resultMono = Mono.just(foundFridge);
@@ -102,6 +115,7 @@ public class FridgeHandlerTest {
     }
 
     @Test
+    @WithMockUser
     public void getAll() {
         Fridge foundFridge1 = new Fridge(FRIDGE_ID, "name1", new ArrayList<>());
         Fridge foundFridge2 = new Fridge(FRIDGE_ID, "name2", new ArrayList<>());

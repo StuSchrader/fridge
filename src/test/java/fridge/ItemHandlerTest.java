@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -23,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.springSecurity;
 
 @WebFluxTest
 @ContextConfiguration(classes = {ItemHandler.class, ItemRouterConfig.class})
@@ -44,7 +46,11 @@ public class ItemHandlerTest {
 
     @BeforeEach
     void setUp() {
-        webTestClient = WebTestClient.bindToApplicationContext(applicationContext).build();
+        webTestClient = WebTestClient
+                .bindToApplicationContext(applicationContext)
+                .apply(springSecurity())
+                .configureClient()
+                .build();
     }
 
     @Test
@@ -78,6 +84,7 @@ public class ItemHandlerTest {
 
 
     @Test
+    @WithMockUser
     public void getById() {
         Item foundItem = new Item(ITEM_ID, ITEM_NAME, SODA);
         Mono<Item> resultMono = Mono.just(foundItem);
@@ -97,6 +104,7 @@ public class ItemHandlerTest {
     }
 
     @Test
+    @WithMockUser
     public void getAll() {
         Item foundItem1 = new Item(ITEM_ID, ITEM_NAME, SODA);
         Item foundItem2 = new Item(ITEM_ID_2, ITEM_NAME_2, SODA);
@@ -116,6 +124,7 @@ public class ItemHandlerTest {
 
 
     @Test
+    @WithMockUser
     public void getItemsByType() {
         Item foundItem1 = new Item(ITEM_ID, ITEM_NAME, SODA);
         Item foundItem2 = new Item(ITEM_ID_2, ITEM_NAME_2, SODA);
